@@ -1,0 +1,5 @@
+natsort
+unidecode
+pyperclip
+pandas
+openpyxl

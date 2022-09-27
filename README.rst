@@ -11,8 +11,6 @@ vidtool
         :alt: Documentation Status
 
 
-
-
 Smart optimization and join video files with minimum reencode process
 
 
@@ -23,7 +21,15 @@ Smart optimization and join video files with minimum reencode process
 Features
 --------
 
-* TODO
+* Homogenize resolutions and codecs from filling in spreadsheet
+* Make turbo join, 400 times faster than common join
+* Join can contain transition effect self-adapted for any video resolution
+* Join process could respect:
+    * Defined maximum sized per file, generating ordered video blocks, automatically split videos larger than the defined maximum size
+    * Personal grouping criteria, like modules for video course
+    * Transition effect auto adapted to the videos resolutions
+* Works with video .mp4, .webm, .avi, .ts, .vob, .mov, .mkv, .wmv and more
+* Require ffmpeg enabled on path system variables
 
 Credits
 -------
