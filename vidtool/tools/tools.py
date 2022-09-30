@@ -201,7 +201,7 @@ def split_mp4(
             duration_string = ""
 
         filename_output = (
-            f"{file_name_without_extension}-%03d.mp4" % number_file
+            f"{file_name_without_extension}-{number_file:03d}.mp4"
         )
         filepath_output = os.path.join(output_folder_path, filename_output)
 
