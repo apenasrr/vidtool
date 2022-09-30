@@ -3,4 +3,4 @@ from .vidtool import *
 
 __author__ = """apenasrr"""
 __email__ = "apenasrr@gmail.com"
-__version__ = "0.1.2"
+__version__ = "0.1.4"
