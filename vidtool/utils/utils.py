@@ -156,7 +156,6 @@ def explode_parts_serie_path(path_serie: pd.Series) -> pd.DataFrame:
 
 def get_serie_sub_folder(serie_folder_path):
     def get_df_sub_folders(serie_folder_path):
-        # TODO: Adapt to be able to deal with Windows and Linux (Posix)
         df = explode_parts_serie_path(serie_folder_path)
         len_cols = len(df.columns)
         list_n_col_to_delete = []

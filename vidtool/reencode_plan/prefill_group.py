@@ -139,6 +139,7 @@ def get_df_prefill(df_update, df_key, df_main_profile_per_subfolder):
             "video_resolution_height",
             "video_resolution_width",
             "video_bitrate",
+            "format_name",
             "is_avc",
             "audio_codec",
             "file_size",

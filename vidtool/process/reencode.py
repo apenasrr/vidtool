@@ -7,12 +7,10 @@ import pandas as pd
 
 from .. import report
 from ..mediainfo import ffprobe
-from ..tools import change_width_height_mp4, convert_mp4_wo_reencode
-from ..utils import (
-    create_report_backup,
-    exclude_all_files_from_folder,
-    get_file_name_dest,
-)
+from ..tools import (change_width_height_mp4, convert_mp4_aac,
+                     convert_mp4_wo_reencode, convert_only_audio)
+from ..utils import (create_report_backup, exclude_all_files_from_folder,
+                     get_file_name_dest)
 
 
 def logging_config():
@@ -131,11 +129,9 @@ def reencode_video(dict_, path_folder_encoded):
     path_folder_dest = path_folder_encoded
     path_file_dest = os.path.join(path_folder_dest, file_name_dest)
 
-    # Make video reencode
-    logging.info(f"Start reencode: {path_file_origin}")
-
     video_codec = dict_["video_codec"]
     audio_codec = dict_["audio_codec"]
+    format_name = dict_["format_name"]
     video_height = dict_["video_resolution_height"]
     video_width = dict_["video_resolution_width"]
     if (
@@ -144,8 +140,18 @@ def reencode_video(dict_, path_folder_encoded):
         and video_height == size_height
         and video_width == size_width
     ):
+        logging.info("Start conversion without reencode: %s", path_file_origin)
         convert_mp4_wo_reencode(path_file_origin, path_file_dest)
+    elif video_codec == "h264" and format_name == "mov,mp4,m4a,3gp,3g2,mj2":
+        logging.info("Start conversion only audio: %s", path_file_origin)
+        convert_only_audio(path_file_origin, path_file_dest)
+    elif video_height == size_height and video_width == size_width:
+        logging.info("Start reencode: %s", path_file_origin)
+        convert_mp4_aac(path_file_origin, path_file_dest)
     else:
+        logging.info(
+            "Start reencode changing resolution: %s", path_file_origin
+        )
         change_width_height_mp4(
             path_file_origin, size_height, size_width, path_file_dest
         )
@@ -244,6 +250,7 @@ def update_file_report(path_file_report, dict_video_data, path_folder_encoded):
     df.loc[index_video, "video_bitrate"] = metadata["video_bitrate"]
     df.loc[index_video, "video_codec"] = metadata["video_codec"]
     df.loc[index_video, "video_profile"] = metadata["video_profile"]
+    df.loc[index_video, "format_name"] = metadata["format_name"]
     df.loc[index_video, "is_avc"] = metadata["is_avc"]
     df.loc[index_video, "audio_codec"] = metadata["audio_codec"]
     df.loc[index_video, "duration"] = metadata["duration"]

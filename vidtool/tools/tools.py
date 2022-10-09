@@ -44,18 +44,116 @@ def get_video_resolution(file_path):
     return resolution
 
 
-def convert_mp4_wo_reencode(path_file_video_origin, path_file_video_dest):
+def convert_mp4_wo_reencode_get_cmd(
+    path_file_video_origin, path_file_video_dest
+):
 
-    logging.info(
-        "Convert video extension without reencode: %s", path_file_video_origin
-    )
     stringa = (
         f'ffmpeg -v quiet -stats -y -i "{path_file_video_origin}" '
         + "-vcodec copy "
         + f'-acodec copy "{path_file_video_dest}"'
     )
+    return stringa
+
+
+def convert_mp4_wo_reencode(path_file_video_origin, path_file_video_dest):
+
+    logging.info(
+        "Convert video extension without reencode: %s", path_file_video_origin
+    )
+    stringa = convert_mp4_wo_reencode_get_cmd(
+        path_file_video_origin, path_file_video_dest
+    )
     print(f"\n{stringa}")
 
+    os.system(stringa)
+    logging.info("Done")
+
+
+def convert_only_audio_get_cmd(
+    path_file_video_origin: str, path_file_video_dest: str
+) -> None:
+    """Make release for mp4 H264/AAC reencoding only audio
+
+    Args:
+        path_file_video_origin (str): Original video file path
+        path_file_video_dest (str): Path of the edited video file
+    """
+
+    stringa = (
+        f'ffmpeg -v quiet -stats -y -i "{path_file_video_origin}" '
+        + "-vcodec copy "
+        + f'-c:a aac "{path_file_video_dest}"'
+    )
+    return stringa
+
+
+def convert_only_audio(
+    path_file_video_origin: str, path_file_video_dest: str
+) -> None:
+
+    """Make release for mp4 H264/AAC reencoding only audio
+
+    Args:
+        path_file_video_origin (str): Original video file path
+        path_file_video_dest (str): Path of the edited video file
+    """
+
+    logging.info(
+        "Convert video extension without reencode: %s", path_file_video_origin
+    )
+
+    stringa = convert_only_audio_get_cmd(
+        path_file_video_origin, path_file_video_dest
+    )
+    print("\n", stringa)
+    os.system(stringa)
+    logging.info("Done")
+
+
+def convert_mp4_aac_get_cmd(
+    path_file_video_origin: str, path_file_video_dest: str
+) -> None:
+    """Make release for mp4 H264/AAC
+
+    Args:
+        path_file_video_origin (str): Original video file path
+        path_file_video_dest (str): Path of the edited video file
+    """
+
+    stringa = (
+        f'ffmpeg -v quiet -stats -y -i "{path_file_video_origin}" '
+        + "-c:v libx264 "
+        + "-crf 18 "
+        + "-maxrate 2.5M "
+        + "-bufsize 4M "
+        + "-preset ultrafast "
+        + "-flags +global_header "
+        + "-pix_fmt yuv420p "
+        + "-profile:v baseline "
+        + "-tune zerolatency "
+        + "-movflags +faststart "
+        + f'-c:a aac "{path_file_video_dest}"'
+    )
+    return stringa
+
+
+def convert_mp4_aac(
+    path_file_video_origin: str, path_file_video_dest: str
+) -> None:
+    """Make release for mp4 H264/AAC
+
+    Args:
+        path_file_video_origin (str): Original video file path
+        path_file_video_dest (str): Path of the edited video file
+    """
+
+    logging.info(f"Convert video: {path_file_video_origin}")
+
+    stringa = convert_mp4_aac_get_cmd(
+        path_file_video_origin, path_file_video_dest
+    )
+    print("\n", stringa)
     os.system(stringa)
     logging.info("Done")
 
@@ -78,7 +176,7 @@ def change_width_height_mp4(
         + f'-vf "scale=w={size_width}:h={size_height}:'
         + "force_original_aspect_ratio=1,"
         + f'pad={size_width}:{size_height}:(ow-iw)/2:(oh-ih)/2" '
-        + "-c:v libx264 -crf 18 -maxrate 2.5M -bufsize 4M -preset ultrafast -flags +global_header "
+        + "-c:v libx264 -crf 23 -maxrate 4M -bufsize 8M -preset veryfast -flags +global_header "
         + "-pix_fmt yuv420p -profile:v baseline -tune zerolatency -movflags +faststart "
         + f'-c:a aac "{path_file_video_dest}"'
     )
@@ -118,7 +216,8 @@ def convert_streaming(path_file_video_origin, path_file_video_dest):
     os.system(stringa)
     logging.info("Done")
 
-    # TODO: create function to convert to mp4 without reencode. Case of .ts from tubedigger
+    # TODO: create function to convert to mp4 without reencode.
+    # Case of .ts from tubedigger
 
 
 def split_mp4(
