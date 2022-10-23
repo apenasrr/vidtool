@@ -45,6 +45,15 @@ def get_all_file_path(folder_path: Path, sort=True) -> dict[str, list[Path]]:
             iter_folder(folder_path, list_file_path, list_error)
         return list_file_path, list_error
 
+    def clean_path(file_path):
+
+        # ensure files first
+        file_path_mask_1 = file_path.parent / ("###" + str(file_path.name))
+        # remove influence from uppercase letters
+        file_path_mask = str(file_path_mask_1).lower()
+        # remove influence from signs
+        return unidecode.unidecode(file_path_mask)
+
     if not folder_path.exists():
         logging.error("Folder not exists: %s", folder_path)
         raise FileNotFoundError(f"Folder not exists: {folder_path}")
@@ -54,11 +63,9 @@ def get_all_file_path(folder_path: Path, sort=True) -> dict[str, list[Path]]:
     if sort:
         list_file_path = natsort.natsorted(
             list_file_path,
-            lambda x: unidecode.unidecode(str(x).lower()),
+            clean_path,
         )
-        list_error = natsort.natsorted(
-            list_error, lambda x: unidecode.unidecode(str(x).lower())
-        )
+        list_error = natsort.natsorted(list_error, clean_path)
 
     return {"content": list_file_path, "errors": list_error}
 
